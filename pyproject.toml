@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68", "wheel", "Cython>=3.0", "numpy>=1.24"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fishnet-zebrafish"
+version = "1.0.0"
+description = "FishNet training and inference for zebrafish larva tracking"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  {name = "Théo Mercé"},
+  {name = "Emilien Reaud"},
+  {name = "Etienne Windels"}
+]
+dependencies = [
+  "Flask>=3.0",
+  "Pillow>=10",
+  "h5py>=3.8",
+  "matplotlib>=3.7",
+  "numpy>=1.24",
+  "onnxruntime>=1.17",
+  "opencv-python>=4.8",
+  "openpyxl>=3.1",
+  "pandas>=2.0",
+  "scipy>=1.10",
+  "torch>=2.0",
+  "tqdm>=4.65",
+  "wandb>=0.16",
+  "imutils>=0.5"
+]
+
+[project.optional-dependencies]
+training = ["wandb>=0.16"]
+test = ["onnxruntime>=1.17", "pytest>=8"]
+annotation = ["Flask>=3.0", "Pillow>=10"]
+onnx = ["onnxruntime>=1.17"]
+format = ["ruff>=0.11", "ty>=0.0.1", "tox>=4"]
+
+[project.scripts]
+fishnet-infer = "fish_net.inference:main"
+fishnet-train = "fish_net.training:main"
+fishnet-annotate = "annotation_app.app:main"
+
+[tool.setuptools.packages.find]
+include = ["fish_net*", "cutils*", "annotation_app*"]
+
+[tool.setuptools.package-data]
+annotation_app = ["templates/*.html", "static/*.css", "static/*.js"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+extend-exclude = ["build", "dist", "outputs", "databases", "data", "annotations", "wandb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.ty.rules]
+unresolved-import = "ignore"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: checks the released ONNX graph"]
+
+

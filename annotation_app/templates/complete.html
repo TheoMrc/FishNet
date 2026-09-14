@@ -1,0 +1,2 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Complete</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body><header><h1>Review complete</h1></header><main><section class="card"><p>All frames in {{ experiment }} / {{ video }} have been reviewed.</p><a class="button" href="{{ url_for('list_frames', experiment=experiment, video=video) }}">Back to frames</a></section></main></body></html>

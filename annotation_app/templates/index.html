@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>FishNet annotations</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><header><h1>FishNet annotation app</h1><nav><a href="{{ url_for('index') }}">Experiments</a><a href="{{ url_for('rolling') }}">Rolling labels</a></nav></header>
+<main><section class="card"><h2>Progress</h2><p>{{ reviewed }} / {{ total }} frames reviewed</p></section>
+<section class="card"><h2>Experiments</h2><table><thead><tr><th>Experiment</th><th>Reviewed frames</th><th></th></tr></thead><tbody>{% for item in experiments %}<tr><td>{{ item.name }}</td><td>{{ item.reviewed }} / {{ item.total }}</td><td><a class="button" href="{{ url_for('list_videos', experiment=item.name) }}">Open</a></td></tr>{% else %}<tr><td colspan="3">No experiment folders found in the configured data directory.</td></tr>{% endfor %}</tbody></table></section></main></body></html>

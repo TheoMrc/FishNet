@@ -1,0 +1,26 @@
+{
+  "seed": 42,
+  "epochs": 75,
+  "bonus_epochs": 25,
+  "patience": 50,
+  "batch_size": 2,
+  "learning_rate": 0.001,
+  "head_loss_weight": 0.001,
+  "midline_loss_weight": 0.01,
+  "rolling_loss_weight": 1.0,
+  "augmentation": true,
+  "image_size": [512, 512],
+  "maximum_fish_per_frame": 22,
+  "head_sigma_start": 2.0,
+  "head_sigma_end": 1.2,
+  "midline_sigma_start": 2.0,
+  "midline_sigma_end": 1.2,
+  "selection_score": "(fish_recall_at_3_px + fish_recall_at_5_px) / 2 - malformed_fish_rate",
+  "validation_experiments": [
+    "2023_03_07_CPF_CPO_2PAM_n=1_1h",
+    "2023_06_21_ToCP_CBDP_4h_n=4",
+    "18_03_27_ToCP",
+    "22_04_26_WT_5_dpf_CPO_2PAM_n=1",
+    "2021_06_29_TBT_TCS_T007_n=2"
+  ]
+}
