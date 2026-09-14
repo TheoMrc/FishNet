@@ -39,7 +39,7 @@ FishNet/
 ├── annotation_app/          Flask application for midline and rolling-posture annotation
 ├── configs/                 Released model and training configurations
 ├── models/                  Released PyTorch and ONNX weights
-├── examples/                Small real annotated example and background images
+├── examples/                Annotated and unannotated example images
 ├── scripts/                 Standalone ONNX inference utility
 ├── tests/                   Smoke, annotation-app, and real-example tests
 ├── pyproject.toml           Project metadata, dependencies, and Ruff/Ty configuration
@@ -232,18 +232,22 @@ existing `annotations.json` is optional: the app discovers images and creates
 the file on the first save. Data remain outside the source package and are
 ignored if the default `annotation_data/` directory is used.
 
-### Included real-data example
+### Included real-data examples
 
 Three annotated 512 x 512 frames and their background image are included under
 `examples/annotation_data/`. They are a small, unmodified subset of the real
-FishNet midline-annotation database. After installing the annotation extras,
-launch the app directly on this example with:
+FishNet midline-annotation database. The same directory also contains
+`FishNet_demo_unannotated/demo_video/` with three 512 x 512 frames and a
+background image and starts without `annotations.json`, allowing another
+user to practice the complete annotation workflow from a clean state. After installing the
+annotation extras, launch the app directly on these examples with:
 
     fishnet-annotate --data-dir examples/annotation_data
 
-Then open http://127.0.0.1:5000 and select the displayed experiment and video.
-The example is intended only to exercise and demonstrate the annotation
-interface; it is not an additional training dataset.
+Then open http://127.0.0.1:5000 and select either the annotated example or
+`FishNet_demo_unannotated`. The unannotated folder is changed only when a
+user saves annotations; the examples are intended only to exercise and
+demonstrate the annotation interface, not as an additional training dataset.
 
 ## Verification
 

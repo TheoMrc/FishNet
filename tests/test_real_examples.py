@@ -16,6 +16,13 @@ ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE_ROOT = ROOT / "examples" / "annotation_data"
 EXPERIMENT = "2023_02_27_CPF_n=3_1h"
 VIDEO = "CPF_1_microM_2"
+UNANNOTATED_EXPERIMENT = "FishNet_demo_unannotated"
+UNANNOTATED_VIDEO = "demo_video"
+UNANNOTATED_FRAMES = (
+    "demo_frame_000001.jpg",
+    "demo_frame_000002.jpg",
+    "demo_frame_000003.jpg",
+)
 
 
 def test_real_example_is_complete_and_browsable():
@@ -74,3 +81,32 @@ def test_real_example_supports_model_assisted_annotation():
     points = response.get_json()["predicted_points"]
     assert len(points) == MIDLINE_POINTS
     assert all(np.isfinite([point["x"], point["y"]]).all() for point in points)
+
+
+def test_unannotated_demo_images_are_discoverable_and_editable():
+    video_dir = EXAMPLE_ROOT / UNANNOTATED_EXPERIMENT / UNANNOTATED_VIDEO
+    assert (video_dir / "background.jpg").exists()
+    assert {path.name for path in video_dir.glob("*.jpg")} == {
+        "background.jpg",
+        *UNANNOTATED_FRAMES,
+    }
+
+    client = create_app(EXAMPLE_ROOT).test_client()
+    assert client.get("/").status_code == 200
+    assert (
+        client.get(
+            f"/experiment/{UNANNOTATED_EXPERIMENT}/{UNANNOTATED_VIDEO}"
+        ).status_code
+        == 200
+    )
+    assert (
+        client.get(
+            f"/experiment/{UNANNOTATED_EXPERIMENT}/{UNANNOTATED_VIDEO}/review"
+        ).status_code
+        == 200
+    )
+    image_response = client.get(
+        f"/data/{UNANNOTATED_EXPERIMENT}/{UNANNOTATED_VIDEO}/{UNANNOTATED_FRAMES[0]}"
+    )
+    assert image_response.status_code == 200
+    assert image_response.mimetype == "image/jpeg"

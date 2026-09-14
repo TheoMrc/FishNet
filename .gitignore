@@ -29,4 +29,7 @@ annotations/
 *.mp4
 *.webm
 annotation_data/
+!examples/
+!examples/annotation_data/
+!examples/annotation_data/**
 *.log
