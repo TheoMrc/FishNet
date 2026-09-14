@@ -48,17 +48,27 @@ def test_saved_annotations_are_loadable_by_fishnet(tmp_path):
     assert dataset.data[0].rolling_states == [True]
 
 
-def test_incomplete_midline_is_rejected(tmp_path):
+def test_reference_midline_workflow_accepts_head_only_fish(tmp_path):
     video_dir = tmp_path / "experiment" / "video"
     video_dir.mkdir(parents=True)
     Image.fromarray(np.zeros((32, 32), dtype=np.uint8)).save(video_dir / "frame.jpg")
-    response = (
-        create_app(tmp_path)
-        .test_client()
-        .post(
-            "/experiment/experiment/video/frame.jpg/save",
-            json=[{"midline_points": [{"x": 1, "y": 2}]}],
-        )
+    client = create_app(tmp_path).test_client()
+    response = client.post(
+        "/experiment/experiment/video/frame.jpg/save",
+        json=[{"midline_points": [{"x": 1, "y": 2}]}],
+    )
+    assert response.status_code == 200
+
+    response = client.post(
+        "/experiment/experiment/video/frame.jpg/save",
+        json=[
+            {
+                "midline_points": [
+                    {"x": 1, "y": 2},
+                    {"x": 2, "y": 3},
+                ],
+            }
+        ],
     )
     assert response.status_code == 400
 

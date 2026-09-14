@@ -24,6 +24,7 @@ from scipy.interpolate import interp1d, splev, splprep
 
 from fish_net.inference import DEFAULT_WEIGHTS, load_model
 from fish_net.load_data import MIDLINE_POINTS, ZONE_SIZE
+from fish_net.models import DEVICE
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".tif", ".tiff"}
 
@@ -87,9 +88,19 @@ def _validate_annotations(value: Any) -> list[dict[str, Any]]:
         if not isinstance(fish, dict):
             raise ValueError(f"Fish {fish_index + 1} is not an object")
         points = fish.get("midline_points")
-        if not isinstance(points, list) or len(points) != MIDLINE_POINTS:
+        if not isinstance(points, list):
             raise ValueError(
-                f"Fish {fish_index + 1} must contain exactly {MIDLINE_POINTS} midline points"
+                f"Fish {fish_index + 1} must contain a list of midline points"
+            )
+        # Match the historical annotation app: a newly placed head may be
+        # saved with one point, while completed training annotations contain
+        # the nine resampled points required by FishNet. Empty fish are
+        # discarded when saving, just as in the reference app.
+        if not points:
+            continue
+        if len(points) not in (1, MIDLINE_POINTS):
+            raise ValueError(
+                f"Fish {fish_index + 1} must contain 1 or {MIDLINE_POINTS} midline points"
             )
         clean_points = []
         for point_index, point in enumerate(points):
@@ -366,7 +377,7 @@ def create_app(
 
         if "model" not in model_cache:
             model_cache["model"], model_cache["config"] = load_model(
-                app.config["WEIGHTS_PATH"], device="cpu"
+                app.config["WEIGHTS_PATH"], device=DEVICE
             )
         model = model_cache["model"]
         image = np.stack([frame_image, frame_image - background])[None]

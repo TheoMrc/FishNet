@@ -1,3 +1,61 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>{{ experiment }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><header><h1>{{ experiment }}</h1><nav><a href="{{ url_for('index') }}">Experiments</a><a href="{{ url_for('rolling') }}">Rolling labels</a></nav></header><main><section class="card"><table><thead><tr><th>Video</th><th>Reviewed frames</th><th></th></tr></thead><tbody>{% for item in videos %}<tr><td>{{ item.name }}</td><td>{{ item.reviewed }} / {{ item.total }}</td><td><a class="button" href="{{ url_for('list_frames', experiment=experiment, video=item.name) }}">Frames</a> <a class="button primary" href="{{ url_for('review_video', experiment=experiment, video=item.name) }}">Review</a></td></tr>{% endfor %}</tbody></table></section></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Videos in {{ experiment }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <div class="header__logo">
+        <object id="animated-svg" type="image/svg+xml"
+                data="{{ url_for('static', filename='top_left_anim_v2.svg') }}"
+                aria-label="FishNet logo"></object>
+    </div>
+    <nav class="header__nav">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('list_videos', experiment=experiment) }}">Videos</a>
+        <a href="{{ url_for('rolling') }}">Rolling labels</a>
+    </nav>
+</header>
+
+<main>
+    <article class="panel">
+        <h1>Videos in {{ experiment }}</h1>
+        <table class="progress-table">
+            <thead>
+            <tr>
+                <th>Video name</th>
+                <th>Progress</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for video in videos %}
+                {% set progress = (video.reviewed / video.total * 100) if video.total else 0 %}
+                <tr>
+                    <td>{{ video.name }}</td>
+                    <td>
+                        <div class="table-progress-bar">
+                            <div class="table-progress-fill" style="width: {{ progress }}%;"></div>
+                        </div>
+                        <p>{{ video.reviewed }} / {{ video.total }} frames reviewed</p>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('review_video', experiment=experiment, video=video.name) }}"
+                           class="btn btn-primary">Review</a>
+                        <a href="{{ url_for('list_frames', experiment=experiment, video=video.name) }}"
+                           class="btn btn-secondary">List frames</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3">No video folders found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </article>
+</main>
+</body>
+</html>

@@ -63,6 +63,8 @@ setup(
             "templates/*.html",
             "static/*.css",
             "static/*.js",
+            "static/*.png",
+            "static/*.svg",
         ],
         "cutils": ["*.pyi", "*.pyx"],
     },

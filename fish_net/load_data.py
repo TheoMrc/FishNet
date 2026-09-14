@@ -167,6 +167,19 @@ class SupervisedDataset(Dataset):
                         / 255
                     )
 
+                    if self.mode == "midline":
+                        # The historical annotation app allows a newly placed
+                        # head to be saved before its nine-point midline is
+                        # completed. Such fish are intentionally excluded from
+                        # supervised midline training, together with their
+                        # rolling label, until annotation is complete.
+                        image_annotations = [
+                            fish_annotations
+                            for fish_annotations in image_annotations
+                            if len(fish_annotations.get("midline_points", []))
+                            == MIDLINE_POINTS
+                        ]
+
                     annotations_head = self.get_annotations_head(
                         image_annotations, mode=self.mode
                     )
@@ -193,13 +206,6 @@ class SupervisedDataset(Dataset):
                             for fish_annotations in image_annotations
                         ]
                         assert len(annotations_head) == len(annotations_midline)
-                        # assert each midline has 9 points
-                        annotations_midline = [
-                            midline
-                            for midline in annotations_midline
-                            if len(midline) == MIDLINE_POINTS
-                        ]
-
                         image_data.annotations_midline = annotations_midline
                         annotations_midline_masks = np.array(
                             [

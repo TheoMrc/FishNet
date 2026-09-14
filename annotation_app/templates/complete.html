@@ -1,2 +1,27 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Complete</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body><header><h1>Review complete</h1></header><main><section class="card"><p>All frames in {{ experiment }} / {{ video }} have been reviewed.</p><a class="button" href="{{ url_for('list_frames', experiment=experiment, video=video) }}">Back to frames</a></section></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Review complete</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <div class="header__logo">
+        <object id="animated-svg" type="image/svg+xml"
+                data="{{ url_for('static', filename='top_left_anim_v2.svg') }}"
+                aria-label="FishNet logo"></object>
+    </div>
+    <nav class="header__nav"><a href="{{ url_for('index') }}">Home</a></nav>
+</header>
+<main>
+    <article class="panel">
+        <h1>Review complete</h1>
+        <p>All frames in {{ experiment }} / {{ video }} have been reviewed.</p>
+        <a class="btn btn-primary" href="{{ url_for('list_frames', experiment=experiment, video=video) }}">Back to frames</a>
+    </article>
+</main>
+</body>
+</html>

@@ -189,7 +189,9 @@ frame key in `annotations.json` contains a list of fish objects with exactly
 nine ordered `midline_points` and a `rolling_proba`, as illustrated by the real
 example under `examples/annotation_data/`. Coordinates use image row as `x` and
 image column as `y` in the annotation app. A `rolling_proba` above 0.5 is a
-positive rolling label.
+positive rolling label. During annotation, a fish may temporarily contain
+only its head; a completed FishNet training record contains exactly nine
+ordered points.
 
 ## Annotation app
 
@@ -204,11 +206,26 @@ Install the optional dependencies and point the app at a local data directory:
     python -m pip install -e ".[annotation]"
     fishnet-annotate --data-dir path/to/midline-annotations
 
-Open http://127.0.0.1:5000. The app supports head placement, nine ordered
-midline points, spline resampling, model-assisted midline suggestions, frame
-review status, and rolling-posture labels. `annotations.json` contains only
-training records; the app keeps its progress flags in `review_state.json` so
-the file can be read directly by `fish_net.load_data.SupervisedDataset`.
+Open http://127.0.0.1:5000. The app uses the historical Fish-Annotation-Apps
+editor layout and interaction model:
+
+- Head mode (`H`) shows every head as a coloured `+`. Shift-click adds a head,
+  clicking selects it, and `Z/S/Q/D` moves the selected head.
+- Midline mode (`M`) focuses the selected fish in a 100-pixel window around its
+  head instead of displaying the whole dish. Midline points are numbered,
+  connected in order, and the head remains a `+`. Shift-click appends a point,
+  clicking selects and drags a point, `Alt`-click moves the head, and the left
+  and right arrows move between fish.
+- `Space` toggles point visibility, `Delete` removes a selected point, `Undo`
+  and `Redo` restore edits, `Auto-annotate` calls the released model, and `é`
+  smooths/resamples a trace to nine points.
+
+The editor can save a head-only fish or a completed nine-point fish, matching
+the original annotation workflow. The FishNet dataset loader ignores
+head-only/incomplete fish until their midline is completed. `annotations.json`
+contains the annotation records; the app keeps frame progress flags in
+`review_state.json` so the completed data can be read directly by
+`fish_net.load_data.SupervisedDataset`.
 
 Each video folder needs `background.jpg` and one or more frame images. An
 existing `annotations.json` is optional: the app discovers images and creates

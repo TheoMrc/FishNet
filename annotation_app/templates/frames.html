@@ -1,3 +1,59 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>{{ video }}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><header><h1>{{ experiment }} / {{ video }}</h1><nav><a href="{{ url_for('list_videos', experiment=experiment) }}">Videos</a><a href="{{ url_for('review_video', experiment=experiment, video=video) }}">Review next</a></nav></header><main><section class="card"><table><thead><tr><th>Frame</th><th>Status</th><th></th></tr></thead><tbody>{% for item in frames %}<tr><td>{{ item.name }}</td><td>{{ 'Reviewed' if item.reviewed else 'Pending' }}</td><td><a class="button" href="{{ url_for('edit_frame', experiment=experiment, video=video, frame=item.name) }}">Annotate</a></td></tr>{% endfor %}</tbody></table></section></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Frames in {{ video }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <div class="header__logo">
+        <object id="animated-svg" type="image/svg+xml"
+                data="{{ url_for('static', filename='top_left_anim_v2.svg') }}"
+                aria-label="FishNet logo"></object>
+    </div>
+    <nav class="header__nav">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('list_videos', experiment=experiment) }}">Videos</a>
+        <a href="{{ url_for('list_frames', experiment=experiment, video=video) }}">Frames</a>
+    </nav>
+</header>
+
+<main>
+    <article class="panel">
+        <h1>Frames in {{ video }}</h1>
+        <table class="progress-table">
+            <thead>
+            <tr>
+                <th>Frame name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for frame in frames %}
+                <tr>
+                    <td>{{ frame.name }}</td>
+                    <td>
+                        {% if frame.reviewed %}
+                            <span class="status reviewed">Reviewed</span>
+                        {% else %}
+                            <span class="status not-reviewed">Not reviewed</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_frame', experiment=experiment, video=video, frame=frame.name) }}"
+                           class="btn btn-primary">Edit frame</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3">No frame images found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </article>
+</main>
+</body>
+</html>

@@ -1,6 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>FishNet annotations</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><header><h1>FishNet annotation app</h1><nav><a href="{{ url_for('index') }}">Experiments</a><a href="{{ url_for('rolling') }}">Rolling labels</a></nav></header>
-<main><section class="card"><h2>Progress</h2><p>{{ reviewed }} / {{ total }} frames reviewed</p></section>
-<section class="card"><h2>Experiments</h2><table><thead><tr><th>Experiment</th><th>Reviewed frames</th><th></th></tr></thead><tbody>{% for item in experiments %}<tr><td>{{ item.name }}</td><td>{{ item.reviewed }} / {{ item.total }}</td><td><a class="button" href="{{ url_for('list_videos', experiment=item.name) }}">Open</a></td></tr>{% else %}<tr><td colspan="3">No experiment folders found in the configured data directory.</td></tr>{% endfor %}</tbody></table></section></main></body></html>
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FishNet experiments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <div class="header__logo">
+        <object id="animated-svg" type="image/svg+xml"
+                data="{{ url_for('static', filename='top_left_anim_v2.svg') }}"
+                aria-label="FishNet logo"></object>
+    </div>
+    <nav class="header__nav">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('rolling') }}">Rolling labels</a>
+    </nav>
+</header>
+
+<main>
+    <article class="panel">
+        <h2>Overall annotation progress</h2>
+        {% set overall_progress = (reviewed / total * 100) if total else 0 %}
+        <div class="global-progress-bar">
+            <div class="global-progress-fill" style="width: {{ overall_progress }}%;">
+                <span class="progress-text">{{ overall_progress | round(2) }} %</span>
+            </div>
+        </div>
+        <p>{{ reviewed }} / {{ total }} frames reviewed</p>
+    </article>
+
+    <article class="panel">
+        <h1>Experiments</h1>
+        <table class="progress-table">
+            <thead>
+            <tr>
+                <th>Experiment name</th>
+                <th>Progress</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for experiment in experiments %}
+                {% set progress = (experiment.reviewed / experiment.total * 100) if experiment.total else 0 %}
+                <tr>
+                    <td>{{ experiment.name }}</td>
+                    <td>
+                        <div class="table-progress-bar">
+                            <div class="table-progress-fill" style="width: {{ progress }}%;"></div>
+                        </div>
+                        <p>{{ experiment.reviewed }} / {{ experiment.total }} frames reviewed</p>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('list_videos', experiment=experiment.name) }}"
+                           class="btn btn-secondary">List videos</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3">No experiment folders found in the configured data directory.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </article>
+</main>
+</body>
+</html>

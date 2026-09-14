@@ -1,3 +1,51 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Rolling labels</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><header><h1>Rolling posture labels</h1><nav><a href="{{ url_for('index') }}">Experiments</a></nav></header><main><section class="card"><p>Set the rolling state for each fish in reviewed frames.</p><button id="save-rolling" class="primary">Save rolling labels</button><table id="rolling-table"><thead><tr><th>Fish crop</th><th>Source</th><th>Rolling</th></tr></thead><tbody>{% for fish in fish_rows %}<tr data-experiment="{{ fish.experiment }}" data-video="{{ fish.video }}" data-frame="{{ fish.frame }}" data-fish-index="{{ fish.fish_index }}"><td><div class="crop" style="background-image:url('{{ fish.image_url }}');background-position:calc(50% - {{ fish.head.y }}px) calc(50% - {{ fish.head.x }}px)"></div></td><td>{{ fish.experiment }} / {{ fish.video }} / {{ fish.frame }} / #{{ fish.fish_index + 1 }}</td><td><input type="checkbox" {% if fish.rolling %}checked{% endif %}></td></tr>{% else %}<tr><td colspan="3">No reviewed fish found.</td></tr>{% endfor %}</tbody></table></section></main><script src="{{ url_for('static', filename='rolling.js') }}"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="{{ url_for('static', filename='icon.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rolling labels</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <div class="header__logo">
+        <object id="animated-svg" type="image/svg+xml"
+                data="{{ url_for('static', filename='top_left_anim_v2.svg') }}"
+                aria-label="FishNet logo"></object>
+    </div>
+    <nav class="header__nav">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('rolling') }}">Rolling labels</a>
+    </nav>
+</header>
+
+<main>
+    <article class="panel">
+        <h1>Rolling posture labels</h1>
+        <p>Set the rolling state for each fish in reviewed frames.</p>
+        <button id="save-rolling" class="btn btn-primary">Save rolling labels</button>
+        <table id="rolling-table" class="progress-table">
+            <thead><tr><th>Fish crop</th><th>Source</th><th>Rolling</th></tr></thead>
+            <tbody>
+            {% for fish in fish_rows %}
+                <tr data-experiment="{{ fish.experiment }}"
+                    data-video="{{ fish.video }}"
+                    data-frame="{{ fish.frame }}"
+                    data-fish-index="{{ fish.fish_index }}">
+                    <td>
+                        <div class="crop" style="background-image:url('{{ fish.image_url }}');background-position:calc(50% - {{ fish.head.y }}px) calc(50% - {{ fish.head.x }}px)"></div>
+                    </td>
+                    <td>{{ fish.experiment }} / {{ fish.video }} / {{ fish.frame }} / #{{ fish.fish_index + 1 }}</td>
+                    <td><input type="checkbox" {% if fish.rolling %}checked{% endif %}></td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3">No reviewed fish found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </article>
+</main>
+<script src="{{ url_for('static', filename='rolling.js') }}"></script>
+</body>
+</html>
