@@ -3,7 +3,7 @@
 ## Authors
 
 - [Théo Mercé, PhD](https://github.com/TheoMrc)
-- [Emilien Reaud, PhD student](https://github.com/EmilienRD)
+- [Emilien Réaud, PhD student](https://github.com/EmilienRD)
 - [Etienne Windels, Data scientist](https://github.com/ewindels)
 
 This repository contains the FishNet architecture, supervised training code,
